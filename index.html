@@ -41,13 +41,13 @@
   }
   .screen.sheet-open .sheet{transform:none}
   .screen.playing .sheet{transform:translateY(105%);transition:transform .55s cubic-bezier(.6,0,.4,1)}
-  .eyebrow{padding:32px 28px 0;font-size:16px;font-weight:400;color:rgba(255,255,255,.45);letter-spacing:.1px}
+  .eyebrow{padding:28px 72px 0 28px;font-size:16px;line-height:21px;font-weight:400;color:rgba(255,255,255,.45);letter-spacing:.1px;text-wrap:balance}
   .word{position:relative;display:block;height:44px;margin:6px 28px 0}
   .word b{position:absolute;left:0;top:0;white-space:nowrap;font-size:36px;line-height:44px;font-weight:500;letter-spacing:-.6px;
     transition:opacity .38s ease,filter .38s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
   .word b.out{opacity:0;filter:blur(8px);transform:translateY(-10px)}
   .word b.pre{opacity:0;filter:blur(8px);transform:translateY(10px);transition:none}
-  .pad{position:absolute;left:12px;right:12px;top:112px;bottom:92px;touch-action:none;cursor:grab}
+  .pad{position:absolute;left:12px;right:12px;top:124px;bottom:92px;touch-action:none;cursor:grab}
   .pad.drag{cursor:grabbing}
   .pad canvas{position:absolute;inset:0;width:100%;height:100%}
   .orb{
@@ -273,7 +273,7 @@
   <!-- mood sheet -->
   <div class="sheet" id="sheet">
     <button class="close" id="close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="eyebrow">Whatever you feel, there’s music for it</div>
+    <div class="eyebrow">Feel better with music</div>
     <div class="word" id="word"></div>
     <div class="pad" id="pad">
       <canvas id="cv"></canvas>
