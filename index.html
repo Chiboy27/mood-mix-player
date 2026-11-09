@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#0b0b0e">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mood Mix">
 <title>Mood Mix</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,7 +175,21 @@
 
   .hint{position:absolute;left:0;right:0;bottom:-44px;text-align:center;font-size:13px;color:#8d8c86;font-family:"Google Sans",sans-serif}
   .hint button{color:#5b5a55;background:rgba(0,0,0,.06);border-radius:6px;padding:6px 12px;margin-left:8px;font-size:13px}
-  body.mobile{background:#0b0b0e;overscroll-behavior:none;touch-action:none}
+  body.mobile{background:#0b0b0e;overscroll-behavior:none;touch-action:none;position:fixed;inset:0}
+  .mobile *{-webkit-tap-highlight-color:transparent}
+  .mobile button{touch-action:manipulation}
+  /* no fake status bar on a real phone: use the device safe areas instead */
+  .mobile .pl,.mobile .np{padding-top:calc(10px + env(safe-area-inset-top))}
+  .mobile .tabs{height:calc(62px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+  .mobile .mini{bottom:calc(68px + env(safe-area-inset-bottom))}
+  .mobile .sheet{height:min(510px,calc(100% - 64px - env(safe-area-inset-top)))}
+  .mobile .pad{bottom:calc(92px + env(safe-area-inset-bottom))}
+  .mobile .cta{bottom:calc(20px + env(safe-area-inset-bottom))}
+  .mobile .nudge{bottom:calc(38px + env(safe-area-inset-bottom))}
+  .mobile .np-cover{width:min(290px,38vh);height:min(290px,38vh);margin-top:16px}
+  .mobile .np-meta{margin-top:24px}
+  .mobile .wave{margin-top:20px}
+  .mobile .np-ctrl{margin-top:18px}
   .mobile .phone{padding:0;border-radius:0;box-shadow:none}
   .mobile .screen{border-radius:0}
   .mobile .island,.mobile .status,.mobile .hint{display:none}
@@ -318,7 +335,10 @@
     else{S=Math.min(1,(innerHeight-90)/844,(innerWidth-32)/390);stage.style.height='';stage.style.transformOrigin='center';stage.style.position='relative';}
     stage.style.transform=`scale(${S})`;
   }
-  addEventListener('resize',()=>{fit();size();}); fit();
+  const refit=()=>{fit();size();};
+  addEventListener('resize',refit);addEventListener('orientationchange',()=>setTimeout(refit,250));
+  if(window.visualViewport)visualViewport.addEventListener('resize',refit);
+  fit();
 
   // ---------- pad grid ----------
   const COLS=9,ROWS=9,PX=30,PY=30;
