@@ -171,7 +171,7 @@
   .bigpp svg{width:26px;height:26px;fill:#0b0b0e}
 
   .flyer{position:absolute;z-index:30;pointer-events:none;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#fff 0 6%,rgba(var(--tint),.9) 40%,rgba(var(--tint),.5) 100%)}
+    background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.9) 0 4%,rgba(var(--tint),.75) 30%,rgba(var(--tint),.35) 100%);box-shadow:0 0 30px rgba(var(--tint),.45)}
 
   .hint{position:absolute;left:0;right:0;bottom:-44px;text-align:center;font-size:13px;color:#8d8c86;font-family:"Google Sans",sans-serif}
   .hint button{color:#5b5a55;background:rgba(0,0,0,.06);border-radius:6px;padding:6px 12px;margin-left:8px;font-size:13px}
@@ -339,7 +339,7 @@
   .li .moodcover{background:radial-gradient(circle,rgba(255,255,255,.9) 0 1.5px,transparent 2px) 0 0/8px 8px,linear-gradient(135deg,rgb(var(--c)),#121212)}
 
   /* playlist now slides in over Library */
-  .pl{background:var(--bg);opacity:0;pointer-events:none;transform:translateX(28px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.2,1)}
+  .pl{background:var(--bg);opacity:0;pointer-events:none;transition:opacity .35s}
   .screen.playing .pl{opacity:1;pointer-events:auto;transform:none}
   .mini{z-index:12}
   .tabs{z-index:11}
@@ -661,17 +661,18 @@
     const fl=document.createElement('div');fl.className='flyer';screen.appendChild(fl);
     const x0=(or.left-sr.left)/S,y0=(or.top-sr.top)/S,s0=or.width/S;
     screen.classList.add('playing');screen.classList.remove('sheet-open');
+    // measure where the cover will END UP: the playlist is still sliding in, so remove its current offset
     const cr=$('thumb').getBoundingClientRect();
-    const x1=(cr.left-sr.left)/S,y1=(cr.top-sr.top)/S,s1=cr.width/S;
+    const plM=new DOMMatrixReadOnly(getComputedStyle($('pl')).transform);
+    const x1=(cr.left-sr.left)/S-plM.m41,y1=(cr.top-sr.top)/S-plM.m42,s1=cr.width/S;
     fl.animate([
-      {left:x0+'px',top:y0+'px',width:s0+'px',height:s0+'px',borderRadius:'50%',offset:0},
-      {left:(x0+x1)/2+40+'px',top:(y0+y1)/2+'px',width:s0*2.2+'px',height:s0*2.2+'px',borderRadius:'50%',offset:.4},
-      {left:x1+'px',top:y1+'px',width:s1+'px',height:s1+'px',borderRadius:'4px',offset:1}
-    ],{duration:760,easing:'cubic-bezier(.5,0,.2,1)',fill:'forwards'}).onfinish=()=>{
-      screen.classList.add('revealed');
-      fl.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'}).onfinish=()=>fl.remove();
-      setPlaying(true);
-    };
+      {left:x0+'px',top:y0+'px',width:s0+'px',height:s0+'px',borderRadius:'50%',opacity:1,offset:0},
+      {left:(x0+(x1+s1/2-s0))/2+'px',top:(y0+y1)/2+'px',width:s0*2+'px',height:s0*2+'px',borderRadius:'50%',opacity:1,offset:.45},
+      {left:x1+'px',top:y1+'px',width:s1+'px',height:s1+'px',borderRadius:'4px',opacity:.85,offset:.82},
+      {left:x1+'px',top:y1+'px',width:s1+'px',height:s1+'px',borderRadius:'4px',opacity:0,offset:1}
+    ],{duration:820,easing:'cubic-bezier(.45,0,.2,1)',fill:'forwards'}).onfinish=()=>fl.remove();
+    // the orb melts into the real cover as it lands, so there is no separate glowing square left on top
+    setTimeout(()=>{screen.classList.add('revealed');setPlaying(true);},560);
   }
   $('cta').onclick=()=>{if(current)play();};
   $('close').onclick=()=>{demo=null;screen.classList.remove('sheet-open');};
